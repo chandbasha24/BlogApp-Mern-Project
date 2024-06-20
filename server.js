@@ -4,17 +4,21 @@ const morgan = require("morgan");
 const colors = require("colors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
-import path from 'path'
+import path from 'path';
+import {fileURLToPath} from 'url';
 
 //env config
 dotenv.config();
 
-//router import
+//router import 
 const userRoutes = require("./routes/userRoutes");
 const blogRoutes = require("./routes/blogRoutes");
 
 //mongodb connection
 connectDB();
+//esModule fix-----------
+const __filename = fileURLToPath(import.meta.url);
+const __dirname=path.dirname(__filename);
 
 //rest objecct
 const app = express();

@@ -1,50 +1,47 @@
-import express from "express";
-import cors from "cors";
-import morgan from "morgan";
-import colors from "colors";
-import dotenv from "dotenv";
-import path from "path";
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+const colors = require("colors");
+const dotenv = require("dotenv");
+const connectDB = require("./config/db");
+import path from 'path';
 import { fileURLToPath } from 'url';
-import connectDB from "./config/db.js"; // Assuming db.js exports a function
 
-// Env config
+//env config
 dotenv.config();
 
-// Router imports
-import userRoutes from "./routes/userRoutes.js";
-import blogRoutes from "./routes/blogRoutes.js";
+//router import 
+const userRoutes = require("./routes/userRoutes");
+const blogRoutes = require("./routes/blogRoutes");
 
-// MongoDB connection
+//mongodb connection
 connectDB();
-
-// ES Module fix
+//esModule fix-----------
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname=path.dirname(__filename);
 
-// Rest object
+//rest objecct
 const app = express();
 
-// Middlewares
+//middelwares
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(express.static(path.join(__dirname,'./client/build')))
 
-// Static files
-app.use(express.static(path.join(__dirname, './client/build')));
-
-// Routes
+//routes
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/blog", blogRoutes);
-
-// Wildcard route
-app.use("*", function(req, res) {
-  res.sendFile(path.join(__dirname, "./client/build/index.html"));
-});
-
+//rest api
+app.use("*",function(req,res){
+  res.sendFile(path.join(__dirname,"./client/build/index.html"));
+})
 // Port
 const PORT = process.env.PORT || 8080;
-
-// Listen
+//listen
 app.listen(PORT, () => {
-  console.log(`Server Running on ${process.env.DEV_MODE} mode port no ${PORT}`.bgCyan.white);
+  console.log(
+    `Server Running on ${process.env.DEV_MODE} mode port no ${PORT}`.bgCyan
+      .white
+  );
 });
